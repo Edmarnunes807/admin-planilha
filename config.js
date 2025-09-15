@@ -1,17 +1,11 @@
-// CONFIG - edite aqui
 const CONFIG = {
-  // URL do seu Google Apps Script Web App (deploy > "Executar app como: Eu" > "Quem tem acesso: Anyone")
-  // Exemplo: 'https://script.google.com/macros/s/AKfy.../exec'
-  API_ENDPOINT: 'https://script.google.com/macros/s/AKfycby6H3AP_b3ht1KFUiRixwUhyWZZFwNsQzwbUboNfSm2bFo1jUZIz5nq4CGf59yhMHs_/exec',
+  API_ENDPOINT: 'https://script.google.com/macros/s/AKfycby1NTo5Iwe0sbFLjGkvjkVslZ3ahUtaJJJ61E1Aihm6pSHXOU2-9UymbgMG7te5lTZx/exec',
 
-  // Nomes das abas na sua planilha (case-sensitive)
   SHEETS: {
     DADOS: 'Dados',
     ITENS: 'Itens',
     CONFIG: 'Config',
     LOG: 'Log',
-    USUARIOS: 'Usuarios' // crie essa aba para logins: colunas: name,password,role
+    USUARIOS: 'Usuarios'
   },
-
-  // Se quiser forçar TLS/https checar origin no backend também
 };
