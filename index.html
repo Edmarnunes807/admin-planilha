@@ -23,6 +23,11 @@
         
         <div class="tab-content active" id="dados-content">
             <h2>Dados</h2>
+            <div class="table-controls">
+                <button id="edit-dados-btn" class="edit-btn">Editar</button>
+                <button id="save-dados-btn" class="save-btn" disabled>Salvar</button>
+                <button id="cancel-dados-btn" class="cancel-btn" disabled>Cancelar</button>
+            </div>
             <div class="table-container">
                 <table id="dados-table">
                     <thead>
@@ -37,6 +42,7 @@
                             <th>Tipo</th>
                             <th>Quantidade</th>
                             <th>Comentário Visível</th>
+                            <th class="actions">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="dados-body">
@@ -48,6 +54,11 @@
         
         <div class="tab-content" id="itens-content">
             <h2>Itens</h2>
+            <div class="table-controls">
+                <button id="edit-itens-btn" class="edit-btn">Editar</button>
+                <button id="save-itens-btn" class="save-btn" disabled>Salvar</button>
+                <button id="cancel-itens-btn" class="cancel-btn" disabled>Cancelar</button>
+            </div>
             <div class="table-container">
                 <table id="itens-table">
                     <thead>
@@ -58,6 +69,7 @@
                             <th>Limite</th>
                             <th>Preço</th>
                             <th>Visível</th>
+                            <th class="actions">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="itens-body">
@@ -89,24 +101,28 @@
             <h2>Enviar Dados para a Planilha</h2>
             <div class="form-container">
                 <form id="data-form">
-                    <div class="form-group">
-                        <label for="name">Nome:</label>
-                        <input type="text" id="name" name="name" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nome:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="phone">Telefone:</label>
-                        <input type="tel" id="phone" name="phone">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="item_id">ID do Item:</label>
-                        <input type="text" id="item_id" name="item_id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Telefone:</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="item_id">ID do Item:</label>
+                            <input type="text" id="item_id" name="item_id">
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -119,27 +135,29 @@
                         <textarea id="comment" name="comment"></textarea>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="type">Tipo:</label>
-                        <select id="type" name="type">
-                            <option value="">Selecione...</option>
-                            <option value="venda">Venda</option>
-                            <option value="consulta">Consulta</option>
-                            <option value="suporte">Suporte</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="amount">Quantidade:</label>
-                        <input type="number" id="amount" name="amount" min="1" value="1">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="comment_visible">Comentário Visível:</label>
-                        <select id="comment_visible" name="comment_visible">
-                            <option value="sim">Sim</option>
-                            <option value="não">Não</option>
-                        </select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="type">Tipo:</label>
+                            <select id="type" name="type">
+                                <option value="">Selecione...</option>
+                                <option value="venda">Venda</option>
+                                <option value="consulta">Consulta</option>
+                                <option value="suporte">Suporte</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="amount">Quantidade:</label>
+                            <input type="number" id="amount" name="amount" min="1" value="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="comment_visible">Comentário Visível:</label>
+                            <select id="comment_visible" name="comment_visible">
+                                <option value="sim">Sim</option>
+                                <option value="não">Não</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <button type="submit">Enviar Dados</button>

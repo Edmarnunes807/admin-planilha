@@ -1,4 +1,4 @@
 // Configurações do Web App do Google Apps Script
 const CONFIG = {
-    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxbauFFHh8X6LPB7juE1Io3vTGAMZ9DR3SM8Xl6blXQxQ_WZ26NcdyrWuNxt43OgVZTBQ/exec' // URL do Web App do Google Apps Script
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz-wVOgGChHRY2T-kJk6wX3t8icX0F8AvQ-vP6YZY2tZ66jG5HUgAP0NWnWoCUVjW8Q_g/exec' // URL do Web App do Google Apps Script
 };
