@@ -4,7 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin Planilha</title>
-  <link rel="stylesheet" href="styles.css" />
+  <!-- 🔽🔽🔽 MODIFICAR ESTA LINHA 🔽🔽🔽 -->
+  <style>
+    <?!= include('styles.css'); ?>
+  </style>
+  <!-- 🔼🔼🔼 FIM DA MODIFICAÇÃO 🔼🔼🔼 -->
 </head>
 <body>
   <header class="topbar">
@@ -87,7 +91,13 @@
     </div>
   </div>
 
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <!-- 🔽🔽🔽 MODIFICAR ESTAS LINHAS 🔽🔽🔽 -->
+  <script>
+    <?!= include('config.js'); ?>
+  </script>
+  <script>
+    <?!= include('app.js'); ?>
+  </script>
+  <!-- 🔼🔼🔼 FIM DA MODIFICAÇÃO 🔼🔼🔼 -->
 </body>
 </html>

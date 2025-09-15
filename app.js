@@ -77,7 +77,21 @@ async function importarLinhas(sheet, rows) {
 
 // ---------------- UI: renderização ----------------
 async function renderTabela(sheet) {
-  const container = document.getElementById("tableContainer");
+  // 🔽🔽🔽 MODIFICAR ESTA PARTE 🔽🔽🔽
+  let container;
+  if (sheet === 'Dados') {
+    container = document.getElementById("dadosTableWrap");
+  } else if (sheet === 'Itens') {
+    container = document.getElementById("itensTableWrap");
+  } else if (sheet === 'Config') {
+    container = document.getElementById("configTableWrap");
+  } else if (sheet === 'Log') {
+    container = document.getElementById("logTableWrap");
+  } else {
+    container = document.getElementById("dadosTableWrap");
+  }
+  // 🔼🔼🔼 FIM DA MODIFICAÇÃO 🔼🔼🔼
+
   container.innerHTML = "<p>Carregando...</p>";
 
   try {
@@ -170,25 +184,27 @@ document.getElementById("importFile")?.addEventListener("change", async (e) => {
 
 // ---------------- INICIALIZAÇÃO ----------------
 document.addEventListener("DOMContentLoaded", () => {
+  // 🔽🔽🔽 MODIFICAR ESTA PARTE 🔽🔽🔽
   const user = getLoggedUser();
-  const loginForm = document.getElementById("loginForm");
+  const loginForm = document.getElementById("loginOverlay"); // ID CORRETO
   const appContent = document.getElementById("appContent");
   const logoutBtn = document.getElementById("logoutBtn");
-  const userDisplay = document.getElementById("userDisplay");
+  const userDisplay = document.getElementById("userName"); // ID CORRETO
 
   if (user) {
     loginForm.style.display = "none";
     appContent.style.display = "block";
-    userDisplay.textContent = user.username;
+    userDisplay.textContent = user.username; // USAR username EM VEZ DE name
     renderTabela("Dados"); // carrega a aba padrão
   } else {
     loginForm.style.display = "block";
     appContent.style.display = "none";
   }
+  // 🔼🔼🔼 FIM DA MODIFICAÇÃO 🔼🔼🔼
 
   document.getElementById("loginBtn")?.addEventListener("click", () => {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+    const username = document.getElementById("loginUser").value.trim();
+    const password = document.getElementById("loginPass").value.trim();
 
     if (login(username, password)) {
       location.reload();
