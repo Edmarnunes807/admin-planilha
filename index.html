@@ -1,172 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Planilha Google</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Gerenciar Chá de Panela</title>
+  <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Visualizador de Planilha Google</h1>
-        
-        <div class="tabs">
-            <div class="tab active" data-tab="dados">Dados</div>
-            <div class="tab" data-tab="itens">Itens</div>
-            <div class="tab" data-tab="log">Log</div>
-            <div class="tab" data-tab="enviar">Enviar Dados</div>
-        </div>
-        
-        <div id="message" class="message"></div>
-        
-        <div class="loading" id="loading">Carregando dados...</div>
-        
-        <div class="tab-content active" id="dados-content">
-            <h2>Dados</h2>
-            <div class="table-controls">
-                <button id="edit-dados-btn" class="edit-btn">Editar</button>
-                <button id="save-dados-btn" class="save-btn" disabled>Salvar</button>
-                <button id="cancel-dados-btn" class="cancel-btn" disabled>Cancelar</button>
-            </div>
-            <div class="table-container">
-                <table id="dados-table">
-                    <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Telefone</th>
-                            <th>ID Item</th>
-                            <th>Label Item</th>
-                            <th>Comentário</th>
-                            <th>Tipo</th>
-                            <th>Quantidade</th>
-                            <th>Comentário Visível</th>
-                            <th class="actions">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dados-body">
-                        <!-- Dados serão inseridos aqui via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="itens-content">
-            <h2>Itens</h2>
-            <div class="table-controls">
-                <button id="edit-itens-btn" class="edit-btn">Editar</button>
-                <button id="save-itens-btn" class="save-btn" disabled>Salvar</button>
-                <button id="cancel-itens-btn" class="cancel-btn" disabled>Cancelar</button>
-            </div>
-            <div class="table-container">
-                <table id="itens-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Label</th>
-                            <th>Lista</th>
-                            <th>Limite</th>
-                            <th>Preço</th>
-                            <th>Visível</th>
-                            <th class="actions">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="itens-body">
-                        <!-- Dados serão inseridos aqui via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="log-content">
-            <h2>Log</h2>
-            <div class="table-container">
-                <table id="log-table">
-                    <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Evento</th>
-                            <th>Detalhes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="log-body">
-                        <!-- Dados serão inseridos aqui via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="enviar-content">
-            <h2>Enviar Dados para a Planilha</h2>
-            <div class="form-container">
-                <form id="data-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">Nome:</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone">Telefone:</label>
-                            <input type="tel" id="phone" name="phone">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="item_id">ID do Item:</label>
-                            <input type="text" id="item_id" name="item_id">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="item_label">Label do Item:</label>
-                        <input type="text" id="item_label" name="item_label">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="comment">Comentário:</label>
-                        <textarea id="comment" name="comment"></textarea>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="type">Tipo:</label>
-                            <select id="type" name="type">
-                                <option value="">Selecione...</option>
-                                <option value="venda">Venda</option>
-                                <option value="consulta">Consulta</option>
-                                <option value="suporte">Suporte</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="amount">Quantidade:</label>
-                            <input type="number" id="amount" name="amount" min="1" value="1">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="comment_visible">Comentário Visível:</label>
-                            <select id="comment_visible" name="comment_visible">
-                                <option value="sim">Sim</option>
-                                <option value="não">Não</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <button type="submit">Enviar Dados</button>
-                </form>
-            </div>
-        </div>
-    </div>
+  <main class="admin-wrap">
+    <header class="admin-top">
+      <h1>Admin — Chá de Panela</h1>
+      <p class="subtitle">Edite itens e registros. As alterações serão salvas na planilha.</p>
+    </header>
 
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+    <section class="panel">
+      <h2>Itens</h2>
+      <div class="actions">
+        <button id="refreshItems" class="btn">Atualizar</button>
+        <button id="addItemBtn" class="btn primary">Adicionar Item</button>
+      </div>
+      <div id="itemsArea" class="table-wrap">Carregando itens...</div>
+    </section>
+
+    <section class="panel">
+      <h2>Registros (Dados)</h2>
+      <div class="actions">
+        <button id="refreshDados" class="btn">Atualizar</button>
+      </div>
+      <div id="dadosArea" class="table-wrap">Carregando dados...</div>
+    </section>
+
+    <footer class="footer">Use com cuidado — ações administrativas são registradas.</footer>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="admin-script.js"></script>
 </body>
 </html>
