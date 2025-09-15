@@ -1,6 +1,4 @@
-// app.js
-
-// Função genérica para fazer requests à API (Apps Script)
+// ---------------- API REQUEST ----------------
 async function apiRequest(action, data = {}) {
   const body = { action, ...data };
   if (CONFIG.API_KEY) body.apiKey = CONFIG.API_KEY;
@@ -10,7 +8,7 @@ async function apiRequest(action, data = {}) {
   try {
     const res = await fetch(CONFIG.API_ENDPOINT, {
       method: "POST",
-      // ⚠️ Não definimos Content-Type para evitar preflight (CORS 405)
+      // ⚠️ não setamos Content-Type para evitar preflight CORS (405 error)
       body: JSON.stringify(body)
     });
 
@@ -50,7 +48,7 @@ function getLoggedUser() {
   return user ? JSON.parse(user) : null;
 }
 
-// ---------------- CARREGAR DADOS ----------------
+// ---------------- DADOS ----------------
 async function carregarDados(sheet) {
   try {
     const data = await apiRequest("getSheet", { sheet });
@@ -61,7 +59,6 @@ async function carregarDados(sheet) {
   }
 }
 
-// ---------------- SALVAR E DELETAR ----------------
 async function salvarLinha(sheet, rowIndex, row) {
   return await apiRequest("updateRow", { sheet, rowIndex, row });
 }
@@ -74,10 +71,102 @@ async function deletarLinha(sheet, rowIndex) {
   return await apiRequest("deleteRow", { sheet, rowIndex });
 }
 
-// ---------------- IMPORTAR EM MASSA ----------------
 async function importarLinhas(sheet, rows) {
   return await apiRequest("importRows", { sheet, rows });
 }
+
+// ---------------- UI: renderização ----------------
+async function renderTabela(sheet) {
+  const container = document.getElementById("tableContainer");
+  container.innerHTML = "<p>Carregando...</p>";
+
+  try {
+    const rows = await carregarDados(sheet);
+    if (rows.length === 0) {
+      container.innerHTML = "<p>Nenhum dado encontrado.</p>";
+      return;
+    }
+
+    const headers = Object.keys(rows[0]);
+    let html = "<table><thead><tr>";
+    headers.forEach(h => {
+      html += `<th>${h}</th>`;
+    });
+    html += "<th>Ações</th></tr></thead><tbody>";
+
+    rows.forEach((row, i) => {
+      html += "<tr>";
+      headers.forEach(h => {
+        html += `<td contenteditable="true" data-row="${i}" data-col="${h}">${row[h] || ""}</td>`;
+      });
+      html += `<td>
+        <button onclick="btnSalvar('${sheet}', ${i})">💾</button>
+        <button onclick="btnDeletar('${sheet}', ${i})">🗑</button>
+      </td>`;
+      html += "</tr>";
+    });
+
+    html += "</tbody></table>";
+    container.innerHTML = html;
+
+  } catch (err) {
+    container.innerHTML = `<p class="error">Erro ao carregar dados: ${err.message}</p>`;
+  }
+}
+
+async function btnSalvar(sheet, rowIndex) {
+  const cells = document.querySelectorAll(`[data-row="${rowIndex}"]`);
+  const row = {};
+  cells.forEach(cell => {
+    row[cell.dataset.col] = cell.textContent.trim();
+  });
+
+  try {
+    await salvarLinha(sheet, rowIndex, row);
+    alert("Linha salva com sucesso!");
+  } catch (err) {
+    alert("Erro ao salvar: " + err.message);
+  }
+}
+
+async function btnDeletar(sheet, rowIndex) {
+  if (!confirm("Tem certeza que deseja excluir esta linha?")) return;
+  try {
+    await deletarLinha(sheet, rowIndex);
+    alert("Linha excluída!");
+    renderTabela(sheet);
+  } catch (err) {
+    alert("Erro ao excluir: " + err.message);
+  }
+}
+
+// ---------------- IMPORTAR EXCEL ----------------
+document.getElementById("importFile")?.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async function (evt) {
+    const data = new Uint8Array(evt.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(worksheet);
+
+    if (rows.length > 0) {
+      if (confirm(`Importar ${rows.length} linhas para Itens?`)) {
+        try {
+          await importarLinhas("Itens", rows);
+          alert("Importação concluída!");
+          renderTabela("Itens");
+        } catch (err) {
+          alert("Erro ao importar: " + err.message);
+        }
+      }
+    }
+  };
+  reader.readAsArrayBuffer(file);
+});
 
 // ---------------- INICIALIZAÇÃO ----------------
 document.addEventListener("DOMContentLoaded", () => {
@@ -91,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loginForm.style.display = "none";
     appContent.style.display = "block";
     userDisplay.textContent = user.username;
+    renderTabela("Dados"); // carrega a aba padrão
   } else {
     loginForm.style.display = "block";
     appContent.style.display = "none";
@@ -108,4 +198,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   logoutBtn?.addEventListener("click", logout);
+
+  // navegação pelas abas
+  document.querySelectorAll("[data-sheet]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      renderTabela(btn.dataset.sheet);
+    });
+  });
 });
