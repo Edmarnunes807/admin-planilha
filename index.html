@@ -5,83 +5,89 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin Planilha</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- SheetJS para importar Excel no cliente -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-  <script src="config.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Admin Planilha</h1>
-    <div id="userArea">
+  <header class="topbar">
+    <div class="brand">Admin Planilha</div>
+    <div class="userarea">
       <span id="userName"></span>
-      <button id="logoutBtn" class="hidden">Logout</button>
+      <button id="logoutBtn" class="btn small hidden">Logout</button>
     </div>
   </header>
 
-  <main>
+  <main class="layout">
     <aside class="sidebar">
-      <button data-view="dados" class="navbtn active">Dados</button>
-      <button data-view="itens" class="navbtn">Itens</button>
-      <button data-view="config" class="navbtn">Config</button>
-      <button data-view="log" class="navbtn">Log</button>
+      <nav>
+        <button class="navbtn active" data-view="dados">Dados</button>
+        <button class="navbtn" data-view="itens">Itens</button>
+        <button class="navbtn" data-view="config">Config</button>
+        <button class="navbtn" data-view="log">Log</button>
+      </nav>
+
       <hr/>
-      <label class="import-label">
-        Importar itens (Excel)
-        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv"/>
-      </label>
+      <div class="import">
+        <label>Importar itens (Excel)</label>
+        <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" />
+      </div>
     </aside>
 
     <section class="content">
-      <!-- Tela Dados -->
+      <!-- DADOS -->
       <div id="view-dados" class="view">
-        <h2>Dados</h2>
-        <div class="controls">
-          <input id="searchDados" placeholder="Pesquisar nome, email ou item_label" />
-        </div>
-        <div id="dadosTableWrap" class="table-wrap"></div>
+        <h1>Dados</h1>
+        <input id="searchDados" placeholder="Pesquisar nome, email ou item..." />
+        <div id="dadosTableWrap" class="tableWrap">Carregando...</div>
       </div>
 
-      <!-- Tela Itens -->
+      <!-- ITENS -->
       <div id="view-itens" class="view hidden">
-        <h2>Itens</h2>
-        <button id="addItemBtn">Adicionar item</button>
-        <div id="itensTableWrap" class="table-wrap"></div>
+        <h1>Itens</h1>
+        <div id="itensTableWrap" class="tableWrap">Carregando...</div>
+        <button id="addItemBtn" class="btn">Adicionar item</button>
       </div>
 
-      <!-- Tela Config -->
+      <!-- CONFIG -->
       <div id="view-config" class="view hidden">
-        <h2>Config</h2>
-        <div id="configTableWrap" class="table-wrap"></div>
-        <button id="addConfigBtn">Adicionar configuração</button>
+        <h1>Config</h1>
+        <div id="configTableWrap" class="tableWrap">Carregando...</div>
+        <button id="addConfigBtn" class="btn">Adicionar chave</button>
       </div>
 
-      <!-- Tela Log -->
+      <!-- LOG -->
       <div id="view-log" class="view hidden">
-        <h2>Log</h2>
-        <div id="logTableWrap" class="table-wrap"></div>
+        <h1>Log</h1>
+        <div id="logTableWrap" class="tableWrap">Carregando...</div>
       </div>
     </section>
   </main>
 
-  <!-- Modal (edição/adicionar) -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <button id="closeModal" class="close">✕</button>
+  <!-- Modal -->
+  <div id="modal" class="modal hidden" role="dialog" aria-hidden="true">
+    <div class="modalInner">
+      <button id="closeModal" class="closeX" aria-label="Fechar">✕</button>
       <div id="modalBody"></div>
     </div>
   </div>
 
-  <!-- Login -->
-  <div id="loginOverlay" class="overlay">
+  <!-- Login overlay -->
+  <div id="loginOverlay" class="loginOverlay" aria-hidden="false">
     <div class="loginBox">
       <h2>Entrar</h2>
-      <input id="loginUser" placeholder="Usuário (nome)" />
-      <input id="loginPass" placeholder="Senha" type="password" />
-      <button id="loginBtn">Entrar</button>
-      <div id="loginMsg" class="msg"></div>
+      <label>Usuário
+        <input id="loginUser" type="text" autocomplete="username" />
+      </label>
+      <label>Senha
+        <input id="loginPass" type="password" autocomplete="current-password" />
+      </label>
+      <div id="loginMsg" class="loginMsg"></div>
+      <div class="row">
+        <button id="loginBtn" class="btn">Entrar</button>
+      </div>
+      <small class="hint">Use login definido no <code>config.js</code> ou na aba <em>Usuarios</em>.</small>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
