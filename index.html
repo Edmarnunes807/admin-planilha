@@ -1,417 +1,154 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Planilha</title>
-  
-  <!-- 🔽🔽🔽 COLAR TODO O CONTEÚDO DO styles.css AQUI 🔽🔽🔽 -->
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --panel:#0f1720;
-      --muted:#8b98a6;
-      --accent:#2b8efc;
-      --card:#0f1720;
-      --glass: rgba(255,255,255,0.02);
-      --radius:12px;
-      --padding:16px;
-      color-scheme: dark;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e6eef6;background:linear-gradient(180deg,#041021 0%, #071428 60%);}
-
-    .topbar{
-      height:56px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
-      border-bottom:1px solid rgba(255,255,255,0.02);
-    }
-    .brand{font-weight:700}
-    .userarea{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted)}
-    .btn{background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
-    .btn.small{padding:6px 10px;font-size:13px}
-    .layout{display:flex;gap:20px;padding:20px;align-items:flex-start}
-    .sidebar{width:240px;min-width:200px;padding:18px;border-radius:12px;background:var(--glass);backdrop-filter:blur(6px);height:calc(100vh - 96px)}
-    .sidebar nav{display:flex;flex-direction:column;gap:8px}
-    .navbtn{background:transparent;border:0;padding:12px 10px;text-align:left;color:var(--muted);border-radius:8px;cursor:pointer}
-    .navbtn.active{background:rgba(255,255,255,0.03);color:white}
-    .import{margin-top:16px;color:var(--muted);font-size:13px}
-    .content{flex:1;padding:12px 8px}
-    .view h1{margin-top:0;color:#dbe8ff}
-    .tableWrap{margin-top:12px;background:var(--card);padding:12px;border-radius:10px;min-height:120px;border:1px solid rgba(255,255,255,0.02)}
-    .tableWrap table{width:100%;border-collapse:collapse;color:#dce9ff}
-    .tableWrap th, .tableWrap td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.02);text-align:left;font-size:14px}
-    input[type="text"], input[type="password"], input[type="search"], textarea{
-      width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;margin-top:6px;
-    }
-    input#searchDados{max-width:420px;margin-bottom:8px}
-
-    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,11,0.6);z-index:999}
-    .modal.hidden{display:none}
-    .modalInner{width:100%;max-width:760px;background:var(--panel);padding:18px;border-radius:12px;position:relative}
-    .closeX{position:absolute;right:10px;top:10px;border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer}
-
-    .loginOverlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(2,6,11,0.7), rgba(2,6,11,0.85));display:flex;align-items:center;justify-content:center;z-index:1000}
-    .loginBox{width:100%;max-width:420px;background:var(--panel);padding:20px;border-radius:12px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
-    .loginBox h2{margin:0 0 10px 0}
-    .loginBox label{display:block;color:var(--muted);margin-top:10px;font-size:14px}
-    .loginMsg{color:#ffbaba;margin-top:8px;min-height:20px}
-
-    .hidden{display:none!important}
-    .smallText{font-size:12px;color:var(--muted)}
-    .tableWrap .msg{color:var(--muted);padding:10px}
-
-    /* responsive */
-    @media(max-width:900px){
-      .layout{flex-direction:column;padding:12px}
-      .sidebar{width:100%;display:flex;flex-direction:row;gap:12px;align-items:center;height:auto;padding:12px}
-      .sidebar nav{flex-direction:row;overflow:auto}
-      .content{padding:6px}
-      .tableWrap{overflow:auto}
-      input#searchDados{width:100%}
-    }
-  </style>
-  <!-- 🔼🔼🔼 FIM DO CSS 🔼🔼🔼 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Planilha Google</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">Admin Planilha</div>
-    <div class="userarea">
-      <span id="userName"></span>
-      <button id="logoutBtn" class="btn small hidden">Logout</button>
+    <div class="container">
+        <h1>Visualizador de Planilha Google</h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="dados">Dados</div>
+            <div class="tab" data-tab="itens">Itens</div>
+            <div class="tab" data-tab="log">Log</div>
+            <div class="tab" data-tab="enviar">Enviar Dados</div>
+        </div>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="loading" id="loading">Carregando dados...</div>
+        
+        <div class="tab-content active" id="dados-content">
+            <h2>Dados</h2>
+            <div class="table-container">
+                <table id="dados-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>ID Item</th>
+                            <th>Label Item</th>
+                            <th>Comentário</th>
+                            <th>Tipo</th>
+                            <th>Quantidade</th>
+                            <th>Comentário Visível</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dados-body">
+                        <!-- Dados serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="itens-content">
+            <h2>Itens</h2>
+            <div class="table-container">
+                <table id="itens-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Label</th>
+                            <th>Lista</th>
+                            <th>Limite</th>
+                            <th>Preço</th>
+                            <th>Visível</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itens-body">
+                        <!-- Dados serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="log-content">
+            <h2>Log</h2>
+            <div class="table-container">
+                <table id="log-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Evento</th>
+                            <th>Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-body">
+                        <!-- Dados serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="enviar-content">
+            <h2>Enviar Dados para a Planilha</h2>
+            <div class="form-container">
+                <form id="data-form">
+                    <div class="form-group">
+                        <label for="name">Nome:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Telefone:</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="item_id">ID do Item:</label>
+                        <input type="text" id="item_id" name="item_id">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="item_label">Label do Item:</label>
+                        <input type="text" id="item_label" name="item_label">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment">Comentário:</label>
+                        <textarea id="comment" name="comment"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="type">Tipo:</label>
+                        <select id="type" name="type">
+                            <option value="">Selecione...</option>
+                            <option value="venda">Venda</option>
+                            <option value="consulta">Consulta</option>
+                            <option value="suporte">Suporte</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Quantidade:</label>
+                        <input type="number" id="amount" name="amount" min="1" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment_visible">Comentário Visível:</label>
+                        <select id="comment_visible" name="comment_visible">
+                            <option value="sim">Sim</option>
+                            <option value="não">Não</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit">Enviar Dados</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <main class="layout">
-    <aside class="sidebar">
-      <nav>
-        <button class="navbtn active" data-sheet="Dados">Dados</button>
-        <button class="navbtn" data-sheet="Itens">Itens</button>
-        <button class="navbtn" data-sheet="Config">Config</button>
-        <button class="navbtn" data-sheet="Log">Log</button>
-      </nav>
-
-      <hr/>
-      <div class="import">
-        <label>Importar itens (Excel)</label>
-        <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" />
-      </div>
-    </aside>
-
-    <section class="content">
-      <!-- DADOS -->
-      <div id="view-dados" class="view">
-        <h1>Dados</h1>
-        <input id="searchDados" placeholder="Pesquisar nome, email ou item..." />
-        <div id="dadosTableWrap" class="tableWrap">Carregando...</div>
-      </div>
-
-      <!-- ITENS -->
-      <div id="view-itens" class="view hidden">
-        <h1>Itens</h1>
-        <div id="itensTableWrap" class="tableWrap">Carregando...</div>
-        <button id="addItemBtn" class="btn">Adicionar item</button>
-      </div>
-
-      <!-- CONFIG -->
-      <div id="view-config" class="view hidden">
-        <h1>Config</h1>
-        <div id="configTableWrap" class="tableWrap">Carregando...</div>
-        <button id="addConfigBtn" class="btn">Adicionar chave</button>
-      </div>
-
-      <!-- LOG -->
-      <div id="view-log" class="view hidden">
-        <h1>Log</h1>
-        <div id="logTableWrap" class="tableWrap">Carregando...</div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Modal -->
-  <div id="modal" class="modal hidden" role="dialog" aria-hidden="true">
-    <div class="modalInner">
-      <button id="closeModal" class="closeX" aria-label="Fechar">✕</button>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-
-  <!-- Login overlay -->
-  <div id="loginOverlay" class="loginOverlay">
-    <div class="loginBox">
-      <h2>Entrar</h2>
-      <label>Usuário
-        <input id="loginUser" type="text" autocomplete="username" />
-      </label>
-      <label>Senha
-        <input id="loginPass" type="password" autocomplete="current-password" />
-      </label>
-      <div id="loginMsg" class="loginMsg"></div>
-      <div class="row">
-        <button id="loginBtn" class="btn">Entrar</button>
-      </div>
-      <small class="hint">Use login definido no <code>config.js</code> ou na aba <em>Usuarios</em>.</small>
-    </div>
-  </div>
-
-  <!-- 🔽🔽🔽 COLAR TODO O CONTEÚDO DO config.js AQUI 🔽🔽🔽 -->
-  <script>
-    // config.js - configure aqui
-    const CONFIG = {
-      // URL do Web App (copie do deploy do Apps Script)
-      API_ENDPOINT: 'https://script.google.com/macros/s/XXXXXXXXXXXX/exec',
-
-      // Opcional: chave de API definida nas propriedades do Apps Script (recomendado)
-      API_KEY: '',
-
-      // Abas da planilha (case-sensitive)
-      SHEETS: {
-        DADOS: 'Dados',
-        ITENS: 'Itens',
-        CONFIG: 'Config',
-        LOG: 'Log',
-        USUARIOS: 'Usuarios'
-      },
-
-      // Lista local de usuários (prioritário sobre aba Usuarios). Exemplo:
-      USERS: [{ username: 'edmar', password: '12345', role: 'admin' }
-        // Adicione logins aqui se quiser (opcional)
-        // { username: 'admin', password: 'admin123', role: 'admin' }
-      ]
-    };
-  </script>
-  <!-- 🔼🔼🔼 FIM DO CONFIG 🔼🔼🔼 -->
-
-  <!-- 🔽🔽🔽 COLAR TODO O CONTEÚDO DO app.js AQUI 🔽🔽🔽 -->
-  <script>
-    // ---------------- API REQUEST ----------------
-    async function apiRequest(action, data = {}) {
-      const body = { action, ...data };
-      if (CONFIG.API_KEY) body.apiKey = CONFIG.API_KEY;
-
-      console.log("Enviando requisição:", CONFIG.API_ENDPOINT, body);
-
-      try {
-        const res = await fetch(CONFIG.API_ENDPOINT, {
-          method: "POST",
-          // ⚠️ não setamos Content-Type para evitar preflight CORS (405 error)
-          body: JSON.stringify(body)
-        });
-
-        if (!res.ok) {
-          throw new Error(`Erro API (${res.status}): ${await res.text()}`);
-        }
-
-        const result = await res.json();
-        console.log("Resposta API:", result);
-        return result;
-
-      } catch (err) {
-        console.error("Erro ao chamar API:", err);
-        throw err;
-      }
-    }
-
-    // ---------------- LOGIN ----------------
-    function login(username, password) {
-      const user = CONFIG.USERS.find(
-        u => u.username === username && u.password === password
-      );
-      if (user) {
-        localStorage.setItem("loggedUser", JSON.stringify(user));
-        return true;
-      }
-      return false;
-    }
-
-    function logout() {
-      localStorage.removeItem("loggedUser");
-      location.reload();
-    }
-
-    function getLoggedUser() {
-      const user = localStorage.getItem("loggedUser");
-      return user ? JSON.parse(user) : null;
-    }
-
-    // ---------------- DADOS ----------------
-    async function carregarDados(sheet) {
-      try {
-        const data = await apiRequest("getSheet", { sheet });
-        return data.rows || [];
-      } catch (err) {
-        console.error("Erro carregar dados:", err);
-        return [];
-      }
-    }
-
-    async function salvarLinha(sheet, rowIndex, row) {
-      return await apiRequest("updateRow", { sheet, rowIndex, row });
-    }
-
-    async function adicionarLinha(sheet, row) {
-      return await apiRequest("appendRow", { sheet, row });
-    }
-
-    async function deletarLinha(sheet, rowIndex) {
-      return await apiRequest("deleteRow", { sheet, rowIndex });
-    }
-
-    async function importarLinhas(sheet, rows) {
-      return await apiRequest("importRows", { sheet, rows });
-    }
-
-    // ---------------- UI: renderização ----------------
-    async function renderTabela(sheet) {
-      let container;
-      if (sheet === 'Dados') {
-        container = document.getElementById("dadosTableWrap");
-      } else if (sheet === 'Itens') {
-        container = document.getElementById("itensTableWrap");
-      } else if (sheet === 'Config') {
-        container = document.getElementById("configTableWrap");
-      } else if (sheet === 'Log') {
-        container = document.getElementById("logTableWrap");
-      } else {
-        container = document.getElementById("dadosTableWrap");
-      }
-      
-      container.innerHTML = "<p>Carregando...</p>";
-
-      try {
-        const rows = await carregarDados(sheet);
-        if (rows.length === 0) {
-          container.innerHTML = "<p>Nenhum dado encontrado.</p>";
-          return;
-        }
-
-        const headers = Object.keys(rows[0]);
-        let html = "<table><thead><tr>";
-        headers.forEach(h => {
-          html += `<th>${h}</th>`;
-        });
-        html += "<th>Ações</th></tr></thead><tbody>";
-
-        rows.forEach((row, i) => {
-          html += "<tr>";
-          headers.forEach(h => {
-            html += `<td contenteditable="true" data-row="${i}" data-col="${h}">${row[h] || ""}</td>`;
-          });
-          html += `<td>
-            <button onclick="btnSalvar('${sheet}', ${i})">💾</button>
-            <button onclick="btnDeletar('${sheet}', ${i})">🗑</button>
-          </td>`;
-          html += "</tr>";
-        });
-
-        html += "</tbody></table>";
-        container.innerHTML = html;
-
-      } catch (err) {
-        container.innerHTML = `<p class="error">Erro ao carregar dados: ${err.message}</p>`;
-      }
-    }
-
-    async function btnSalvar(sheet, rowIndex) {
-      const cells = document.querySelectorAll(`[data-row="${rowIndex}"]`);
-      const row = {};
-      cells.forEach(cell => {
-        row[cell.dataset.col] = cell.textContent.trim();
-      });
-
-      try {
-        await salvarLinha(sheet, rowIndex, row);
-        alert("Linha salva com sucesso!");
-      } catch (err) {
-        alert("Erro ao salvar: " + err.message);
-      }
-    }
-
-    async function btnDeletar(sheet, rowIndex) {
-      if (!confirm("Tem certeza que deseja excluir esta linha?")) return;
-      try {
-        await deletarLinha(sheet, rowIndex);
-        alert("Linha excluída!");
-        renderTabela(sheet);
-      } catch (err) {
-        alert("Erro ao excluir: " + err.message);
-      }
-    }
-
-    // ---------------- IMPORTAR EXCEL ----------------
-    document.getElementById("fileInput")?.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = async function (evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json(worksheet);
-
-        if (rows.length > 0) {
-          if (confirm(`Importar ${rows.length} linhas para Itens?`)) {
-            try {
-              await importarLinhas("Itens", rows);
-              alert("Importação concluída!");
-              renderTabela("Itens");
-            } catch (err) {
-              alert("Erro ao importar: " + err.message);
-            }
-          }
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    });
-
-    // ---------------- INICIALIZAÇÃO ----------------
-    document.addEventListener("DOMContentLoaded", () => {
-      const user = getLoggedUser();
-      const loginForm = document.getElementById("loginOverlay");
-      const appContent = document.querySelector(".layout");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const userDisplay = document.getElementById("userName");
-
-      if (user) {
-        loginForm.style.display = "none";
-        appContent.style.display = "flex";
-        userDisplay.textContent = user.username;
-        renderTabela("Dados");
-      } else {
-        loginForm.style.display = "flex";
-        appContent.style.display = "none";
-      }
-
-      document.getElementById("loginBtn")?.addEventListener("click", () => {
-        const username = document.getElementById("loginUser").value.trim();
-        const password = document.getElementById("loginPass").value.trim();
-
-        if (login(username, password)) {
-          location.reload();
-        } else {
-          alert("Usuário ou senha inválidos!");
-        }
-      });
-
-      logoutBtn?.addEventListener("click", logout);
-
-      // navegação pelas abas
-      document.querySelectorAll("[data-sheet]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
-          const viewId = `view-${btn.dataset.sheet.toLowerCase()}`;
-          const view = document.getElementById(viewId);
-          if (view) view.classList.remove("hidden");
-          
-          document.querySelectorAll(".navbtn").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          
-          renderTabela(btn.dataset.sheet);
-        });
-      });
-    });
-  </script>
-  <!-- 🔼🔼🔼 FIM DO APP.JS 🔼🔼🔼 -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
