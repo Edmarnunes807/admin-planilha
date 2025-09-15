@@ -74,29 +74,12 @@ async function loadSheetData() {
             throw new Error('URL do Apps Script não configurada. Atualize o arquivo config.js');
         }
         
-        // Carregar dados de cada aba
-        const [dadosResponse, itensResponse, logResponse] = await Promise.all([
-            fetchWithCors(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Dados`),
-            fetchWithCors(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Itens`),
-            fetchWithCors(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Log`)
-        ]);
-        
-        // Verificar se as respostas são válidas
-        if (!dadosResponse || !itensResponse || !logResponse) {
-            throw new Error('Erro ao carregar dados da planilha: respostas inválidas');
-        }
-        
-        // Processar respostas
+        // Carregar dados de cada aba usando JSONP para evitar problemas de CORS
         const [dadosData, itensData, logData] = await Promise.all([
-            dadosResponse.json(),
-            itensResponse.json(),
-            logResponse.json()
+            fetchJsonp(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Dados`),
+            fetchJsonp(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Itens`),
+            fetchJsonp(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Log`)
         ]);
-        
-        // Verificar se há erros nas respostas
-        if (dadosData.error) throw new Error(dadosData.error);
-        if (itensData.error) throw new Error(itensData.error);
-        if (logData.error) throw new Error(logData.error);
         
         // Armazenar dados
         sheetsData.dados = processSheetData(dadosData);
@@ -120,27 +103,32 @@ async function loadSheetData() {
     }
 }
 
-// Função para fazer requisições com tratamento de CORS
-async function fetchWithCors(url, options = {}) {
-    try {
-        // Para requisições POST, primeiro fazer preflight OPTIONS
-        if (options.method === 'POST') {
-            try {
-                await fetch(url + (url.includes('?') ? '&' : '?') + 'options=1', {
-                    method: 'OPTIONS'
-                });
-            } catch (e) {
-                console.log('Preflight OPTIONS falhou, continuando mesmo assim...');
-            }
-        }
+// Função para fazer requisições JSONP (contorna problemas de CORS)
+function fetchJsonp(url) {
+    return new Promise((resolve, reject) => {
+        // Criar um callback único
+        const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
         
-        // Fazer a requisição real
-        const response = await fetch(url, options);
-        return response;
-    } catch (error) {
-        console.error('Erro na requisição:', error);
-        throw error;
-    }
+        // Adicionar o script à página
+        const script = document.createElement('script');
+        script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+        
+        // Definir a função de callback global
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        
+        // Tratamento de erro
+        script.onerror = function() {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            reject(new Error('JSONP request failed'));
+        };
+        
+        document.body.appendChild(script);
+    });
 }
 
 // Processar dados da planilha (converter array de arrays para array de objetos)
@@ -269,41 +257,30 @@ async function saveChanges(tableName) {
         const headers = Object.keys(sheetsData[tableName][0] || {});
         const values = sheetsData[tableName].map(row => headers.map(header => row[header]));
         
-        // Enviar dados para o servidor
-        const response = await fetchWithCors(CONFIG.SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: 'updateData',
-                sheet: tableName,
-                headers: headers,
-                values: values
-            })
+        // Enviar dados para o servidor usando formulário (contorna CORS)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = CONFIG.SCRIPT_URL;
+        form.style.display = 'none';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'data';
+        input.value = JSON.stringify({
+            action: 'updateData',
+            sheet: tableName,
+            headers: headers,
+            values: values
         });
         
-        if (!response.ok) {
-            throw new Error('Erro ao salvar dados na planilha');
-        }
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
         
-        const result = await response.json();
-        
-        if (result.result === 'success') {
-            // Atualizar dados originais
-            originalData[tableName] = JSON.parse(JSON.stringify(sheetsData[tableName]));
-            
-            // Sair do modo de edição
-            editMode[tableName] = false;
-            updateEditButtons(tableName);
-            populateTable(tableName);
-            
-            showMessage('Dados salvos com sucesso!', 'success');
-        } else {
-            throw new Error(result.error || 'Erro desconhecido ao salvar dados');
-        }
-        
+        // Não esperamos resposta pois é um submit de formulário
+        showMessage('Dados enviados para processamento. Recarregue a página para ver as alterações.', 'success');
         showLoading(false);
+        
     } catch (error) {
         console.error('Erro ao salvar dados:', error);
         showMessage('Erro ao salvar dados. Verifique o console para mais detalhes.', 'error');
@@ -344,38 +321,32 @@ async function submitFormData(event) {
             comment_visible: formData.get('comment_visible')
         };
         
-        // Enviar dados via POST para o Apps Script
-        const response = await fetchWithCors(CONFIG.SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: 'addRow',
-                sheet: 'Dados',
-                data: data
-            })
+        // Enviar dados via formulário (contorna CORS)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = CONFIG.SCRIPT_URL;
+        form.style.display = 'none';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'data';
+        input.value = JSON.stringify({
+            action: 'addRow',
+            sheet: 'Dados',
+            data: data
         });
         
-        if (!response.ok) {
-            throw new Error('Erro ao enviar dados para a planilha');
-        }
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
         
-        const result = await response.json();
+        showMessage('Dados enviados com sucesso! A página será recarregada.', 'success');
         
-        if (result.result === 'success') {
-            // Limpar formulário
-            event.target.reset();
-            
-            // Recarregar dados para mostrar a nova entrada
-            await loadSheetData();
-            
-            showMessage('Dados enviados com sucesso!', 'success');
-        } else {
-            throw new Error(result.error || 'Erro desconhecido ao enviar dados');
-        }
+        // Recarregar a página após um breve delay
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
         
-        showLoading(false);
     } catch (error) {
         console.error('Erro ao enviar dados:', error);
         showMessage('Erro ao enviar dados. Verifique o console para mais detalhes.', 'error');
