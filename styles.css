@@ -1,0 +1,52 @@
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --accent:#1f6feb;
+  --text:#e6eef8;
+  --muted:#a9b4c6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter, system-ui, Arial;
+  background:linear-gradient(180deg,#071028 0%, #081526 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 24px;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+h1{margin:0;font-size:18px}
+main{display:flex;gap:16px;padding:16px}
+.sidebar{
+  width:220px;
+  background:rgba(255,255,255,0.02);
+  padding:12px;border-radius:8px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.navbtn{
+  background:transparent;border:0;padding:10px;border-radius:6px;color:var(--text);
+  text-align:left;cursor:pointer;
+}
+.navbtn.active{background:rgba(255,255,255,0.03)}
+.content{flex:1}
+.view{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px}
+.table-wrap{margin-top:12px;overflow:auto;background:rgba(0,0,0,0.2);padding:10px;border-radius:6px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px}
+.controls{display:flex;gap:8px;align-items:center}
+button{cursor:pointer}
+.hidden{display:none}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center}
+.modal-content{background:var(--card);padding:16px;border-radius:8px;width:min(820px,95%);position:relative}
+.close{position:absolute;right:8px;top:8px;background:transparent;border:0;font-size:18px;color:var(--muted)}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6)}
+.loginBox{background:var(--card);padding:18px;border-radius:8px;width:320px;display:flex;flex-direction:column;gap:8px}
+.loginBox input{padding:10px;border-radius:6px;border:0;background:#0a1a2b;color:var(--text)}
+.msg{color:#ffd2d2;font-size:13px}
+.import-label input{display:block;margin-top:6px}
+#userArea{display:flex;gap:8px;align-items:center}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Planilha</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- SheetJS para importar Excel no cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Admin Planilha</h1>
+    <div id="userArea">
+      <span id="userName"></span>
+      <button id="logoutBtn" class="hidden">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <button data-view="dados" class="navbtn active">Dados</button>
+      <button data-view="itens" class="navbtn">Itens</button>
+      <button data-view="config" class="navbtn">Config</button>
+      <button data-view="log" class="navbtn">Log</button>
+      <hr/>
+      <label class="import-label">
+        Importar itens (Excel)
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv"/>
+      </label>
+    </aside>
+
+    <section class="content">
+      <!-- Tela Dados -->
+      <div id="view-dados" class="view">
+        <h2>Dados</h2>
+        <div class="controls">
+          <input id="searchDados" placeholder="Pesquisar nome, email ou item_label" />
+        </div>
+        <div id="dadosTableWrap" class="table-wrap"></div>
+      </div>
+
+      <!-- Tela Itens -->
+      <div id="view-itens" class="view hidden">
+        <h2>Itens</h2>
+        <button id="addItemBtn">Adicionar item</button>
+        <div id="itensTableWrap" class="table-wrap"></div>
+      </div>
+
+      <!-- Tela Config -->
+      <div id="view-config" class="view hidden">
+        <h2>Config</h2>
+        <div id="configTableWrap" class="table-wrap"></div>
+        <button id="addConfigBtn">Adicionar configuração</button>
+      </div>
+
+      <!-- Tela Log -->
+      <div id="view-log" class="view hidden">
+        <h2>Log</h2>
+        <div id="logTableWrap" class="table-wrap"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal (edição/adicionar) -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="closeModal" class="close">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Login -->
+  <div id="loginOverlay" class="overlay">
+    <div class="loginBox">
+      <h2>Entrar</h2>
+      <input id="loginUser" placeholder="Usuário (nome)" />
+      <input id="loginPass" placeholder="Senha" type="password" />
+      <button id="loginBtn">Entrar</button>
+      <div id="loginMsg" class="msg"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
