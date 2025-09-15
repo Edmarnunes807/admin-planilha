@@ -76,13 +76,14 @@ async function loadSheetData() {
         
         // Carregar dados de cada aba
         const [dadosResponse, itensResponse, logResponse] = await Promise.all([
-            fetch(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Dados`),
-            fetch(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Itens`),
-            fetch(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Log`)
+            fetchWithCors(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Dados`),
+            fetchWithCors(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Itens`),
+            fetchWithCors(`${CONFIG.SCRIPT_URL}?action=getData&sheet=Log`)
         ]);
         
-        if (!dadosResponse.ok || !itensResponse.ok || !logResponse.ok) {
-            throw new Error('Erro ao carregar dados da planilha');
+        // Verificar se as respostas são válidas
+        if (!dadosResponse || !itensResponse || !logResponse) {
+            throw new Error('Erro ao carregar dados da planilha: respostas inválidas');
         }
         
         // Processar respostas
@@ -91,6 +92,11 @@ async function loadSheetData() {
             itensResponse.json(),
             logResponse.json()
         ]);
+        
+        // Verificar se há erros nas respostas
+        if (dadosData.error) throw new Error(dadosData.error);
+        if (itensData.error) throw new Error(itensData.error);
+        if (logData.error) throw new Error(logData.error);
         
         // Armazenar dados
         sheetsData.dados = processSheetData(dadosData);
@@ -114,6 +120,29 @@ async function loadSheetData() {
     }
 }
 
+// Função para fazer requisições com tratamento de CORS
+async function fetchWithCors(url, options = {}) {
+    try {
+        // Para requisições POST, primeiro fazer preflight OPTIONS
+        if (options.method === 'POST') {
+            try {
+                await fetch(url + (url.includes('?') ? '&' : '?') + 'options=1', {
+                    method: 'OPTIONS'
+                });
+            } catch (e) {
+                console.log('Preflight OPTIONS falhou, continuando mesmo assim...');
+            }
+        }
+        
+        // Fazer a requisição real
+        const response = await fetch(url, options);
+        return response;
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        throw error;
+    }
+}
+
 // Processar dados da planilha (converter array de arrays para array de objetos)
 function processSheetData(data) {
     if (!data || !data.values || data.values.length < 2) return [];
@@ -132,6 +161,18 @@ function processSheetData(data) {
 function populateTable(tableName) {
     const tableBody = document.getElementById(`${tableName}-body`);
     tableBody.innerHTML = '';
+    
+    if (!sheetsData[tableName] || sheetsData[tableName].length === 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = tableName === 'log' ? 3 : (tableName === 'itens' ? 7 : 11);
+        td.textContent = 'Nenhum dado encontrado';
+        td.style.textAlign = 'center';
+        td.style.padding = '20px';
+        tr.appendChild(td);
+        tableBody.appendChild(tr);
+        return;
+    }
     
     sheetsData[tableName].forEach((row, index) => {
         const tr = document.createElement('tr');
@@ -229,7 +270,7 @@ async function saveChanges(tableName) {
         const values = sheetsData[tableName].map(row => headers.map(header => row[header]));
         
         // Enviar dados para o servidor
-        const response = await fetch(CONFIG.SCRIPT_URL, {
+        const response = await fetchWithCors(CONFIG.SCRIPT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -304,7 +345,7 @@ async function submitFormData(event) {
         };
         
         // Enviar dados via POST para o Apps Script
-        const response = await fetch(CONFIG.SCRIPT_URL, {
+        const response = await fetchWithCors(CONFIG.SCRIPT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -348,6 +389,11 @@ function showMessage(message, type) {
     messageEl.textContent = message;
     messageEl.className = `message ${type}`;
     messageEl.style.display = 'block';
+    
+    // Auto-esconder mensagem após 5 segundos
+    setTimeout(() => {
+        hideMessage();
+    }, 5000);
 }
 
 function hideMessage() {
