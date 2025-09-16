@@ -1,16 +1,16 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin — Gerenciar Chá de Panela</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Chá de Panela</title>
   <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
   <main class="admin-wrap">
     <header class="admin-top">
-      <h1>Admin — Chá de Panela</h1>
-      <p class="subtitle">Edite itens e registros. As alterações serão salvas na planilha.</p>
+      <h1>Admin — Gerenciar Planilha</h1>
+      <p class="subtitle">Edite os itens e registros diretamente</p>
     </header>
 
     <section class="panel">
@@ -19,20 +19,17 @@
         <button id="refreshItems" class="btn">Atualizar</button>
         <button id="addItemBtn" class="btn primary">Adicionar Item</button>
       </div>
-      <div id="itemsArea" class="table-wrap">Carregando itens...</div>
+      <div id="itemsArea" class="table-wrap">Carregando...</div>
     </section>
 
     <section class="panel">
       <h2>Registros (Dados)</h2>
-      <div class="actions">
-        <button id="refreshDados" class="btn">Atualizar</button>
-      </div>
-      <div id="dadosArea" class="table-wrap">Carregando dados...</div>
+      <div class="actions"><button id="refreshDados" class="btn">Atualizar</button></div>
+      <div id="dadosArea" class="table-wrap">Carregando...</div>
     </section>
 
-    <footer class="footer">Use com cuidado — ações administrativas são registradas.</footer>
+    <footer class="footer">Somente você deve usar este painel</footer>
   </main>
-
   <script src="config.js"></script>
   <script src="admin-script.js"></script>
 </body>
