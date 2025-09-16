@@ -35,6 +35,25 @@ body {
   font-size: 0.9rem;
 }
 
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tab {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #1e293b;
+  color: var(--text);
+  cursor: pointer;
+}
+.tab.active {
+  background: var(--accent2);
+  color: #062030;
+  font-weight: 600;
+}
+
 .panel {
   background: var(--card);
   border-radius: var(--radius);
@@ -82,15 +101,16 @@ body {
   gap: 12px;
 }
 
-/* Cards em vez de tabela no mobile */
-.item-card, .data-card {
+.item-card, .data-card, .comment-card, .config-card {
   background: #0f172a;
   border-radius: var(--radius);
   padding: 12px;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  word-break: break-word;
+  white-space: normal;
 }
 
-.item-card h3, .data-card h3 {
+.item-card h3, .data-card h3, .comment-card h3, .config-card h3 {
   margin: 0 0 8px;
   font-size: 1rem;
   color: var(--accent2);
@@ -105,13 +125,13 @@ body {
   color: var(--muted);
   margin-bottom: 2px;
 }
-.field span {
+.field span, .field input, .field select {
   display: block;
   font-size: 0.95rem;
+  width: 100%;
 }
 
 .input, select.input {
-  width: 100%;
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #374151;
@@ -132,13 +152,16 @@ body {
   padding: 8px 0;
 }
 
-/* Desktop: volta tabela */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Responsivo */
 @media (min-width: 900px) {
   .table-wrap {
     display: block;
     overflow-x: auto;
   }
-  .item-card, .data-card {
+  .item-card, .data-card, .comment-card, .config-card {
     background: none;
     box-shadow: none;
     border-radius: 0;

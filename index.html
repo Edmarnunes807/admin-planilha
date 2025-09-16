@@ -10,10 +10,17 @@
   <main class="admin-wrap">
     <header class="admin-header">
       <h1>🎁 Painel de Administração</h1>
-      <p class="subtitle">Gerencie itens e registros do Chá de Panela</p>
+      <p class="subtitle">Gerencie todos os dados do Chá de Panela</p>
     </header>
 
-    <section class="panel">
+    <nav class="tabs">
+      <button data-tab="itens" class="tab active">Itens</button>
+      <button data-tab="dados" class="tab">Registros</button>
+      <button data-tab="comments" class="tab">Comentários</button>
+      <button data-tab="config" class="tab">Configurações</button>
+    </nav>
+
+    <section id="tab-itens" class="panel tab-panel active">
       <div class="panel-header">
         <h2>Itens</h2>
         <div class="panel-actions">
@@ -24,7 +31,7 @@
       <div id="itemsArea" class="table-wrap">Carregando...</div>
     </section>
 
-    <section class="panel">
+    <section id="tab-dados" class="panel tab-panel">
       <div class="panel-header">
         <h2>Registros</h2>
         <div class="panel-actions">
@@ -32,6 +39,26 @@
         </div>
       </div>
       <div id="dadosArea" class="table-wrap">Carregando...</div>
+    </section>
+
+    <section id="tab-comments" class="panel tab-panel">
+      <div class="panel-header">
+        <h2>Comentários</h2>
+        <div class="panel-actions">
+          <button id="refreshComments" class="btn">🔄 Atualizar</button>
+        </div>
+      </div>
+      <div id="commentsArea" class="table-wrap">Carregando...</div>
+    </section>
+
+    <section id="tab-config" class="panel tab-panel">
+      <div class="panel-header">
+        <h2>Configurações</h2>
+        <div class="panel-actions">
+          <button id="refreshConfig" class="btn">🔄 Atualizar</button>
+        </div>
+      </div>
+      <div id="configArea" class="table-wrap">Carregando...</div>
     </section>
 
     <footer class="footer">
