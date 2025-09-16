@@ -3,33 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Admin — Chá de Panela</title>
+  <title>Painel Admin — Chá de Panela</title>
   <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
   <main class="admin-wrap">
-    <header class="admin-top">
-      <h1>Admin — Gerenciar Planilha</h1>
-      <p class="subtitle">Edite os itens e registros diretamente</p>
+    <header class="admin-header">
+      <h1>🎁 Painel de Administração</h1>
+      <p class="subtitle">Gerencie itens e registros do Chá de Panela</p>
     </header>
 
     <section class="panel">
-      <h2>Itens</h2>
-      <div class="actions">
-        <button id="refreshItems" class="btn">Atualizar</button>
-        <button id="addItemBtn" class="btn primary">Adicionar Item</button>
+      <div class="panel-header">
+        <h2>Itens</h2>
+        <div class="panel-actions">
+          <button id="refreshItems" class="btn">🔄 Atualizar</button>
+          <button id="addItemBtn" class="btn primary">➕ Adicionar Item</button>
+        </div>
       </div>
       <div id="itemsArea" class="table-wrap">Carregando...</div>
     </section>
 
     <section class="panel">
-      <h2>Registros (Dados)</h2>
-      <div class="actions"><button id="refreshDados" class="btn">Atualizar</button></div>
+      <div class="panel-header">
+        <h2>Registros</h2>
+        <div class="panel-actions">
+          <button id="refreshDados" class="btn">🔄 Atualizar</button>
+        </div>
+      </div>
       <div id="dadosArea" class="table-wrap">Carregando...</div>
     </section>
 
-    <footer class="footer">Somente você deve usar este painel</footer>
+    <footer class="footer">
+      <p>⚠️ Este painel é restrito — apenas para uso do organizador.</p>
+    </footer>
   </main>
+
   <script src="config.js"></script>
   <script src="admin-script.js"></script>
 </body>
