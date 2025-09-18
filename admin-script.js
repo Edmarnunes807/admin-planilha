@@ -41,7 +41,9 @@
     }
     const wrap = document.createElement("div");
     wrap.className = "table-wrap";
-    items.forEach((it) => {
+
+    // mais recentes primeiro
+    items.slice().reverse().forEach((it) => {
       const card = document.createElement("div");
       card.className = "item-card";
       card.innerHTML = `
@@ -108,7 +110,9 @@
     const wrap = document.createElement("div");
     wrap.className = "table-wrap";
     const keys = Object.keys(dados[0]).filter(k => k !== "__row");
-    dados.forEach((row) => {
+
+    // mais recentes primeiro
+    dados.slice().reverse().forEach((row) => {
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
@@ -163,7 +167,9 @@
     const wrap = document.createElement("div");
     wrap.className = "table-wrap";
     const keys = Object.keys(comments[0]).filter(k => k !== "__row");
-    comments.forEach((row) => {
+
+    // mais recentes primeiro
+    comments.slice().reverse().forEach((row) => {
       const card = document.createElement("div");
       card.className = "comment-card";
       card.innerHTML = `
